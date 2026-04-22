@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import emailjs from '@emailjs/browser'
 
 import finexpoImage1 from '../image/finexpo/image.png'
 import finexpoImage2 from '../image/finexpo/image copy.png'
@@ -391,42 +390,31 @@ function App() {
   const [isSending, setIsSending] = useState(false)
   const [activeGallery, setActiveGallery] = useState(null)
 
-  const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID
-  const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID
-  const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+  const FORMSPREE_URL = 'https://formsubmit.co/fahmi.adr46@gmail.com'
 
   async function handleSubmit(event) {
     event.preventDefault()
-
-    if (!serviceId || !templateId || !publicKey) {
-      setStatus({
-        type: 'error',
-        message: 'Email service is not configured yet. Add the EmailJS env values and try again.',
-      })
-      return
-    }
 
     setIsSending(true)
     setStatus({ type: 'idle', message: '' })
 
     try {
-      await emailjs.send(
-        serviceId,
-        templateId,
-        {
-          name: formData.name,
-          email: formData.email,
-          note: formData.note,
-        },
-        { publicKey },
-      )
+      const response = await fetch(FORMSPREE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(formData),
+      })
 
-      setFormData(initialForm)
-      setStatus({ type: 'success', message: 'Your message has been sent successfully.' })
+      if (response.ok) {
+        setFormData(initialForm)
+        setStatus({ type: 'success', message: 'Your message has been sent successfully.' })
+      } else {
+        throw new Error('Form submission failed')
+      }
     } catch {
       setStatus({
         type: 'error',
-        message: 'Something went wrong while sending your message. Please try again.',
+        message: 'Something went wrong. Please try again or email me directly.',
       })
     } finally {
       setIsSending(false)
@@ -665,8 +653,7 @@ function App() {
               <Pill>Contact</Pill>
               <h2 className={sectionTitleClass}>Let&apos;s talk about the next product or system.</h2>
               <p className={mutedTextClass}>
-                Use the form to send a note directly to my inbox. The form is wired for EmailJS and reads its
-                credentials from environment variables.
+                Use the form to send a note directly to my inbox. No signup required.
               </p>
             </div>
 
