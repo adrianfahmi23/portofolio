@@ -574,7 +574,7 @@ function App() {
           <section className={`${shellClass} pb-6 pt-[72px]`} id="about">
             <SectionHeader
               label="Profile"
-              title="A fullstack profile, not a resume page."
+              title="A Fullstack Developer"
               description="My work covers interface development, backend implementation, mobile-oriented delivery, and system thinking. I care about fast iteration, clear problem solving, and building products that hold up in real business environments."
             />
 
